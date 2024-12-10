@@ -1,0 +1,36 @@
+spring:
+  application:
+    name: moban
+
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 192.168.101.132:8848
+        namespace: dev
+      config:
+        server-addr: 192.168.101.132:8848
+        import-check:
+          enabled: false
+
+        namespace: dev
+        file-extension: yaml
+        refresh-enabled: true
+        #        shared-configs:
+        #          - data-id: logging-${spring.profiles.active}.yaml
+        #            group: gulimall-plus-common
+        #            refresh: true
+        #        引用配置文件
+
+
+
+
+
+
+
+
+
+
+
+
+  profiles:
+    active: dev
