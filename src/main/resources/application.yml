@@ -17,6 +17,17 @@ spring:
     redis:
       host: 192.168.101.132
       port: 6379
+  ai:
+    openai:
+      api-key: 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
+      chat:
+        options:
+          model: gpt-4o-mini
+    stabilityai:
+      api-key: test
+    ollama:
+      base-url: http://localhost:11434
+
 
 
 
