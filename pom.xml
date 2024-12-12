@@ -194,6 +194,13 @@
             <version>8.0.1.Final</version>
         </dependency>
 
+        <dependency>
+            <groupId>io.minio</groupId>
+            <artifactId>minio</artifactId>
+            <version>8.5.14</version> <!-- 请确认最新版本 -->
+        </dependency>
+
+
 
 
 

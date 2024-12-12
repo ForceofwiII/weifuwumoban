@@ -1,6 +1,8 @@
 package com.fow.weifuwumoban;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
+import com.alibaba.fastjson2.JSON;
+import com.fow.weifuwumoban.entity.User;
 import org.junit.jupiter.api.Test;
 import org.redisson.api.RedissonClient;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -34,9 +36,15 @@ class WeifuwumobanApplicationTests {
     public void test(){
 
 
+        User user = new User();
 
-        StringRedisTemplate stringRedisTemplate = new StringRedisTemplate();
-        stringRedisTemplate.setEnableTransactionSupport(true); // 开启事务支持
+        user.setUserName("test");
+        user.setPassword("123");
+        user.setUserRole("123");
+
+
+        String json = JSON.toJSONString(user);
+        System.out.println(json);
 
 
 

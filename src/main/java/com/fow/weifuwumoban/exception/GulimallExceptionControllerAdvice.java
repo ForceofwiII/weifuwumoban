@@ -1,16 +1,22 @@
 package com.fow.weifuwumoban.exception;
 
 
+import com.alibaba.fastjson.JSON;
 import com.fow.weifuwumoban.enums.BizCodeEnume;
 import com.fow.weifuwumoban.utils.R;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * 集中处理所有异常
@@ -22,17 +28,60 @@ import java.util.Map;
 public class GulimallExceptionControllerAdvice {
 
 
+
+    /**
+     * 处理 @Valid 校验失败异常
+     */
+
     @ExceptionHandler(value= MethodArgumentNotValidException.class)
     public R handleVaildException(MethodArgumentNotValidException e){
         log.error("数据校验出现问题{}，异常类型：{}",e.getMessage(),e.getClass());
-        BindingResult bindingResult = e.getBindingResult();
+        String err = "";
+        Map<String, String> errors = new HashMap<>();
+        for (FieldError error : e.getBindingResult().getFieldErrors()) {
+            errors.put(error.getField(), error.getDefaultMessage());
+            err += error.getDefaultMessage()+" ";
+        }
 
-        Map<String,String> errorMap = new HashMap<>();
-        bindingResult.getFieldErrors().forEach((fieldError)->{
-            errorMap.put(fieldError.getField(),fieldError.getDefaultMessage());
-        });
-        return R.error(BizCodeEnume.VAILD_EXCEPTION.getCode(),BizCodeEnume.VAILD_EXCEPTION.getMsg());
+        // 收集对象级别的校验错误
+        for (ObjectError error : e.getBindingResult().getGlobalErrors()) {
+            errors.put(error.getObjectName(), error.getDefaultMessage());
+           err+=error.getDefaultMessage()+" ";
+        }
+
+
+
+        return R.error(BizCodeEnume.VAILD_EXCEPTION.getCode(),err);
     }
+
+
+    /**
+     * 处理 @Validated 校验参数失败异常（针对单个参数校验）
+     */
+    @ExceptionHandler(ConstraintViolationException.class)
+    public R handleConstraintViolationException(ConstraintViolationException ex) {
+        // 收集所有违反约束的信息
+        Map<String, String> errors = ex.getConstraintViolations().stream()
+                .collect(Collectors.toMap(
+                        violation -> violation.getPropertyPath().toString(),
+                        ConstraintViolation::getMessage
+                ));
+
+        String error = JSON.toJSONString(errors);
+        return R.error(BizCodeEnume.VAILD_EXCEPTION.getCode(),error);
+    }
+
+
+
+    @ExceptionHandler(value = RuntimeException.class)
+    public R handleRuntimeException(RuntimeException e){
+        log.error("错误："+e.getMessage());
+        return R.error(BizCodeEnume.UNKNOW_EXCEPTION.getCode(),e.getMessage());
+    }
+
+
+
+
 
     @ExceptionHandler(value = Throwable.class)
     public R handleException(Throwable throwable){
