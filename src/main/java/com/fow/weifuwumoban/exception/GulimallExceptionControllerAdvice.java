@@ -1,6 +1,7 @@
 package com.fow.weifuwumoban.exception;
 
 
+import cn.dev33.satoken.exception.NotLoginException;
 import com.alibaba.fastjson.JSON;
 import com.fow.weifuwumoban.enums.BizCodeEnume;
 import com.fow.weifuwumoban.utils.R;
@@ -69,6 +70,19 @@ public class GulimallExceptionControllerAdvice {
 
         String error = JSON.toJSONString(errors);
         return R.error(BizCodeEnume.VAILD_EXCEPTION.getCode(),error);
+    }
+
+
+    /**
+     * 处理 satoken 令牌过期异常
+     */
+
+    @ExceptionHandler(value = NotLoginException.class)
+    public  R notLoginException(NotLoginException e){
+        log.error("错误："+e.getMessage());
+
+        return R.error(BizCodeEnume.UNKNOW_EXCEPTION.getCode(),e.getType());
+
     }
 
 

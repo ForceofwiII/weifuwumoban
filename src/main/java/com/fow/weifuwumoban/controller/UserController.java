@@ -1,6 +1,7 @@
 package com.fow.weifuwumoban.controller;
 
 
+import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
 import cn.hutool.http.HttpUtil;
@@ -11,6 +12,8 @@ import com.fow.weifuwumoban.service.UserService;
 import com.fow.weifuwumoban.utils.R;
 import com.fow.weifuwumoban.vo.GithubUser;
 import com.fow.weifuwumoban.vo.GoogleUser;
+import com.fow.weifuwumoban.vo.UserLoginVo;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -39,6 +42,16 @@ public class UserController {
 
     }
 
+    @GetMapping("/logout")
+    public R logout(HttpServletRequest request){
+
+
+        StpUtil.logout();
+
+
+        return R.ok();
+    }
+
     @PostMapping("/register")
     public R register(@RequestBody @Valid UserLoginDto userLoginDto){
 
@@ -52,8 +65,26 @@ public class UserController {
         return R.ok();
     }
 
+
+    @GetMapping("/info")
+    public R getUserInfo(HttpServletRequest request){
+
+
+        String satoken = request.getHeader("satoken");
+
+
+        UserLoginVo userLoginVo = userService.getUserInfo(satoken);
+
+
+
+        return R.ok(userLoginVo);
+
+
+    }
+
+
     @GetMapping("/oauth2/github/success")
-    public String github(@RequestParam("code") String code , HttpSession session) {
+    public String github(@RequestParam("code") String code ) {
         //根据授权码获得令牌
 
         //糊涂工具包发送post请求
@@ -109,15 +140,8 @@ public class UserController {
 
         //如果用户是第一次进来，就注册一个账号
 
-        R r = memberFeignService.githubLogin(githubUser);
-        if(r.getCode()!=0){
-            throw new RuntimeException("登录失败");
-        }
 
-        MemberEntityVo data = r.getData(new TypeReference<MemberEntityVo>() {
-        });
-        log.info("登录成功：用户信息：{}",data);
-        session.setAttribute("loginUser",data);
+
 
 
         return "redirect:http://gulimall.com";
@@ -126,7 +150,7 @@ public class UserController {
     }
 
     @GetMapping("/oauth2/google/success")
-    public String google(@RequestParam("code") String code , HttpSession session) {
+    public String google(@RequestParam("code") String code ) {
         //根据授权码获得令牌
 
         //糊涂工具包发送post请求
@@ -158,16 +182,9 @@ public class UserController {
         String userInfo = response1.body();
         System.out.println("User Info: " + userInfo);
         GoogleUser googleUser = JSON.parseObject(userInfo, GoogleUser.class);
-        R r = memberFeignService.googleLogin(googleUser);
-        if(r.getCode()!=0){
-            throw new RuntimeException("登录失败");
-        }
 
-        MemberEntityVo data = r.getData(new TypeReference<MemberEntityVo>() {
-        });
-        log.info("登录成功：用户信息：{}",data);
 
-        session.setAttribute("loginUser",data);
+        // 如果用户是第一次进来，就注册一个账号
 
 
 

@@ -28,6 +28,10 @@ spring:
     ollama:
       base-url: http://localhost:11434
 
+  servlet:
+    multipart:
+      max-file-size: 100MB
+
 
 
 
