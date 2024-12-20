@@ -1,16 +1,23 @@
 package com.fow.weifuwumoban.controller;
 
 
+import cn.hutool.core.io.FileTypeUtil;
+import cn.hutool.core.lang.UUID;
+import cn.hutool.core.util.RandomUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.fow.weifuwumoban.entity.SkuImage;
 import com.fow.weifuwumoban.service.SkuImageService;
 import com.fow.weifuwumoban.utils.R;
+import com.fow.weifuwumoban.vo.FileVo;
 import io.minio.GetPresignedObjectUrlArgs;
 import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
 import io.minio.RemoveObjectArgs;
 import io.minio.errors.*;
 import io.minio.http.Method;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,6 +39,7 @@ import java.util.regex.Pattern;
 @RequestMapping("/product/image")
 public class FileController {
 
+    private static final Logger log = LoggerFactory.getLogger(FileController.class);
     @Autowired
     MinioClient minioClient;
 
@@ -56,10 +64,12 @@ public class FileController {
             return R.error("上传失败，请重试");
         }
 
+        String uuid = RandomUtil.randomString(16);
+
         try {
 
             // 2. 上传到 MinIO
-            String objectName = dateFolder + "/" + originalFilename;
+            String objectName = dateFolder + "/" + uuid;
             minioClient.putObject(
                     PutObjectArgs.builder()
                             .bucket(bucketName)
@@ -93,13 +103,35 @@ public class FileController {
             skuImage.setUpdateTime(LocalDateTime.now());
             skuImageService.save(skuImage);
 
+            FileVo fileVo = new FileVo();
+            BeanUtils.copyProperties(skuImage, fileVo);
+
             // 4. 返回图片 URL
-            return R.ok(imageUrl);
+            return R.ok(fileVo);
 
         } catch (Exception e) {
 
             throw new RuntimeException("上传失败");
         }
+
+
+    }
+
+
+    @PostMapping("/user/upload")
+    public R userUpload(  @RequestParam("file") MultipartFile file) throws IOException {
+
+
+
+            String type = FileTypeUtil.getType(file.getInputStream());
+            log.info("文件类型{}",type);
+            if(!("jpg".equalsIgnoreCase(type) || "png".equalsIgnoreCase(type))){
+
+                return R.error("上传失败，请重试");
+            }
+
+            return R.ok();
+
 
 
     }
