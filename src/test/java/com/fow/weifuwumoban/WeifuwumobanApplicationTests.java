@@ -3,6 +3,7 @@ package com.fow.weifuwumoban;
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import com.alibaba.fastjson2.JSON;
 import com.fow.weifuwumoban.entity.User;
+import com.fow.weifuwumoban.exception.CustomRuntimeException;
 import org.junit.jupiter.api.Test;
 import org.redisson.api.RedissonClient;
 import org.slf4j.Logger;
@@ -44,11 +45,14 @@ class WeifuwumobanApplicationTests {
         user.setUserName("test");
         user.setPassword("123");
         user.setUserRole("123");
+        ;
 
 
-        String json = JSON.toJSONString(user);
-        System.out.println(json);
 
+
+
+
+        throw new CustomRuntimeException(400,"错误");
 
 
 
