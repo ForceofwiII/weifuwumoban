@@ -7,7 +7,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 
 @SpringBootApplication
 @MapperScan("com.fow.weifuwumoban.mapper")
-@EnableFeignClients
+@EnableFeignClients(basePackages = "com.fow.weifuwumoban.feign")
 public class WeifuwumobanApplication {
 
     public static void main(String[] args) {

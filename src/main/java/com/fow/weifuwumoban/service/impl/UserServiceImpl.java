@@ -9,6 +9,7 @@ import com.fow.weifuwumoban.dto.UserLoginDto;
 import com.fow.weifuwumoban.entity.User;
 import com.fow.weifuwumoban.enums.SensitiveType;
 import com.fow.weifuwumoban.enums.UserRoleEnum;
+import com.fow.weifuwumoban.feign.WareFeignService;
 import com.fow.weifuwumoban.mapper.UserMapper;
 import com.fow.weifuwumoban.service.UserService;
 import com.fow.weifuwumoban.strategy.SensitiveContext;
@@ -33,11 +34,17 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Autowired
     SensitiveContext sensitiveContext;
 
+
+    @Autowired
+    WareFeignService wareFeignService;
+
     @Override
     public User findByAccount(String userAccount) {
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("userAccount", userAccount);
         return this.getOne(queryWrapper);
+
+        
     }
 
     @Override

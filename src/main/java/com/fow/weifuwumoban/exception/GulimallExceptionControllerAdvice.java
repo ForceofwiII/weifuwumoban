@@ -86,6 +86,13 @@ public class GulimallExceptionControllerAdvice {
     }
 
 
+    @ExceptionHandler(value= CustomRuntimeException.class)
+    public R customexception(CustomRuntimeException e){
+        log.error("错误："+e.getMessage());
+        return R.error(e.getCode(),e.getMessage());
+    }
+
+
 
     @ExceptionHandler(value = RuntimeException.class)
     public R handleRuntimeException(RuntimeException e){
