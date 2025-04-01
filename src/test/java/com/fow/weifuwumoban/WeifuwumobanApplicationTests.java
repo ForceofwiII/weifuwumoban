@@ -5,6 +5,7 @@ import com.alibaba.fastjson2.JSON;
 import com.fow.weifuwumoban.entity.User;
 import com.fow.weifuwumoban.exception.CustomRuntimeException;
 import org.junit.jupiter.api.Test;
+import org.kie.api.runtime.KieSession;
 import org.redisson.api.RedissonClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +32,10 @@ class WeifuwumobanApplicationTests {
     RedissonClient redissonClient;
 
 
+    @Autowired
+    KieSession kieSession;
+
+
     @Test
     void contextLoads() {
     }
@@ -40,15 +45,13 @@ class WeifuwumobanApplicationTests {
     public void test(){
 
 
-        User user = new User();
-
-        user.setUserName("test");
-        user.setPassword("123");
-        user.setUserRole("123");
-        ;
 
 
 
+//        kieSession.insert();
+//        kieSession.setGlobal();
+//        kieSession.fireAllRules();
+//        kieSession.dispose();
 
 
 

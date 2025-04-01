@@ -200,7 +200,40 @@
             <version>8.5.14</version> <!-- 请确认最新版本 -->
         </dependency>
 
-        
+
+
+<!--        drools规则引擎-->
+
+        <!-- Drools 核心引擎 -->
+        <dependency>
+            <groupId>org.drools</groupId>
+            <artifactId>drools-core</artifactId>
+            <version>9.44.0.Final</version>
+        </dependency>
+        <!-- Drools 编译器，用于编译 DRL 文件 -->
+        <dependency>
+            <groupId>org.drools</groupId>
+            <artifactId>drools-compiler</artifactId>
+            <version>9.44.0.Final</version>
+        </dependency>
+        <!-- KIE API，操作规则引擎 -->
+        <dependency>
+            <groupId>org.kie</groupId>
+            <artifactId>kie-api</artifactId>
+            <version>9.44.0.Final</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.drools</groupId>
+            <artifactId>drools-mvel</artifactId>
+            <version>9.44.0.Final</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.drools</groupId>
+            <artifactId>drools-decisiontables</artifactId>
+            <version>9.44.0.Final</version>
+        </dependency>
 
 
 
